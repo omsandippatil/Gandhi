@@ -6,7 +6,7 @@ export default function Maintenance() {
   return (
     <>
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Space+Grotesk:wght@700&display=swap');
         
         * {
           margin: 0;
@@ -15,20 +15,43 @@ export default function Maintenance() {
         }
 
         body {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          background: #0a0a0a;
-          color: #e5e5e5;
+          font-family: 'Space Grotesk', monospace;
+          background: #F5F5F5;
+          color: #050505;
           overflow-x: hidden;
+          text-transform: uppercase;
         }
 
-        @keyframes progress {
+        body::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: 
+            repeating-linear-gradient(0deg, transparent, transparent 39px, #050505 39px, #050505 40px),
+            repeating-linear-gradient(90deg, transparent, transparent 39px, #050505 39px, #050505 40px);
+          opacity: 0.03;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        body::after {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" /></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        @keyframes progressAnimation {
           0% { width: 0%; }
           100% { width: 73%; }
-        }
-
-        @keyframes pulse {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 1; }
         }
       `}</style>
 
@@ -36,123 +59,84 @@ export default function Maintenance() {
         .page-maintenance {
           min-height: 100vh;
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
           padding: 20px;
-          background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+          position: relative;
+          z-index: 3;
         }
 
-        .content {
+        .content-center {
           width: 100%;
-          max-width: 500px;
+          max-width: 600px;
           text-align: center;
         }
 
-        .title {
-          font-size: 28px;
-          font-weight: 600;
-          margin-bottom: 12px;
-          color: #ffffff;
-          letter-spacing: -0.02em;
+        .maintenance-title {
+          font-family: 'Syne', sans-serif;
+          font-size: clamp(48px, 8vw, 80px);
+          font-weight: 800;
+          margin-bottom: 40px;
+          letter-spacing: 2px;
         }
 
-        .subtitle {
-          font-size: 15px;
-          color: #888888;
-          margin-bottom: 48px;
-          font-weight: 400;
-        }
-
-        .progress-container {
-          margin-bottom: 48px;
-        }
-
-        .progress-bar {
+        .maintenance-progress {
           width: 100%;
-          height: 4px;
-          background: #2a2a2a;
-          border-radius: 2px;
+          margin-bottom: 30px;
+        }
+
+        .progress-wrapper {
+          background: #F5F5F5;
+          border: 2px solid #050505;
+          padding: 10px;
+          box-shadow: 6px 6px 0 #050505;
+        }
+
+        .progress-track {
+          width: 100%;
+          height: 40px;
+          background: #F5F5F5;
+          border: 2px solid #050505;
           overflow: hidden;
-          margin-bottom: 12px;
         }
 
-        .progress-fill {
+        .progress-bar-fill {
           height: 100%;
-          background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-          border-radius: 2px;
-          animation: progress 2s ease-out forwards;
+          background: #CCFF00;
+          border-right: 2px solid #050505;
+          animation: progressAnimation 2s ease-out forwards;
         }
 
-        .progress-text {
-          font-size: 13px;
-          color: #666666;
-          font-weight: 500;
-        }
-
-        .back-link {
-          margin-top: 24px;
-        }
-
-        .link-button {
-          display: inline-block;
-          padding: 12px 24px;
-          background: #1a1a1a;
-          color: #e5e5e5;
-          text-decoration: none;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 500;
-          border: 1px solid #2a2a2a;
-          transition: all 0.2s ease;
-        }
-
-        .link-button:hover {
-          background: #2a2a2a;
-          border-color: #3a3a3a;
-        }
-
-        .status-dot {
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          background: #3b82f6;
-          border-radius: 50%;
-          margin-right: 8px;
-          animation: pulse 2s ease-in-out infinite;
+        .fun-quote {
+          font-family: 'Space Grotesk', monospace;
+          font-size: clamp(14px, 2.5vw, 18px);
+          font-weight: 700;
+          opacity: 0.8;
+          line-height: 1.6;
         }
 
         @media (max-width: 768px) {
-          .title {
-            font-size: 24px;
-          }
-          
-          .subtitle {
-            font-size: 14px;
+          .progress-track {
+            height: 30px;
           }
         }
       `}</style>
 
       <div className="page-maintenance">
-        <div className="content">
-          <h1 className="title">
-            <span className="status-dot"></span>
-            Processing
-          </h1>
-          <p className="subtitle">Please wait while we complete the operation</p>
+        <div className="content-center">
+          <h1 className="maintenance-title">PROCESSING</h1>
           
-          <div className="progress-container">
-            <div className="progress-bar">
-              <div className="progress-fill"></div>
+          <div className="maintenance-progress">
+            <div className="progress-wrapper">
+              <div className="progress-track">
+                <div className="progress-bar-fill"></div>
+              </div>
             </div>
-            <p className="progress-text">73% complete</p>
           </div>
 
-          <div className="back-link">
-            <Link href="/" className="link-button">
-              Back to Home
-            </Link>
-          </div>
+          <p className="fun-quote">
+            "YOUR MONEY IS SAFER WITH GANDHI THAN IN YOUR POCKET"
+          </p>
         </div>
       </div>
     </>
