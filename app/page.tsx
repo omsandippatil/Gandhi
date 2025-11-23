@@ -541,6 +541,90 @@ export default function GandhiPage() {
           </div>
         </section>
 
+        {/* Features Grid Section */}
+<section className="bg-void-black py-16 sm:py-24 px-4 relative overflow-hidden grid-bg-dark border-y-2 border-white">
+  <div className="max-w-6xl mx-auto relative z-10">
+    <div className="text-center mb-12 sm:mb-16 reveal-text">
+      <h3 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold uppercase mb-4 text-white">
+        Arsenal of <span className="text-acid-green">Truth</span>
+      </h3>
+      <p className="font-mono text-xs md:text-sm text-gray-400">
+        Tools forged in the fires of financial discipline
+      </p>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+      {/* Automatic Sync */}
+      <div className="reveal-text group bg-void-black brutal-border brutal-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 p-6 text-center cursor-pointer">
+        <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center">
+          <svg className="w-10 h-10 text-acid-green group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+        </div>
+        <h4 className="text-lg sm:text-xl font-display font-bold uppercase mb-2 text-white group-hover:text-acid-green transition-colors">
+          Auto Sync
+        </h4>
+        <p className="font-mono text-xs text-gray-400 leading-relaxed">
+          Email crawling. Zero manual entry. Your spending secrets extracted automatically.
+        </p>
+      </div>
+
+      {/* Tax Calculation */}
+      <div className="reveal-text group bg-void-black brutal-border brutal-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 p-6 text-center cursor-pointer" style={{transitionDelay: '100ms'}}>
+        <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center">
+          <svg className="w-10 h-10 text-acid-green group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" x2="12" y1="2" y2="22"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h4 className="text-lg sm:text-xl font-display font-bold uppercase mb-2 text-white group-hover:text-acid-green transition-colors">
+          Tax Math
+        </h4>
+        <p className="font-mono text-xs text-gray-400 leading-relaxed">
+          Calculate what you owe the system. No surprises. Only brutal honesty.
+        </p>
+      </div>
+
+      {/* Finance Forecasting */}
+      <div className="reveal-text group bg-void-black brutal-border brutal-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 p-6 text-center cursor-pointer" style={{transitionDelay: '200ms'}}>
+        <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center">
+          <svg className="w-10 h-10 text-acid-green group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 3v18h18"/>
+            <path d="m19 9-5 5-4-4-3 3"/>
+          </svg>
+        </div>
+        <h4 className="text-lg sm:text-xl font-display font-bold uppercase mb-2 text-white group-hover:text-acid-green transition-colors">
+          Future Vision
+        </h4>
+        <p className="font-mono text-xs text-gray-400 leading-relaxed">
+          AI-powered predictions. See your financial future before you ruin it.
+        </p>
+      </div>
+
+      {/* Bills Management */}
+      <div className="reveal-text group bg-void-black brutal-border brutal-shadow hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 p-6 text-center cursor-pointer" style={{transitionDelay: '300ms'}}>
+        <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center">
+          <svg className="w-10 h-10 text-acid-green group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+            <path d="M10 9H8"/>
+            <path d="M16 13H8"/>
+            <path d="M16 17H8"/>
+          </svg>
+        </div>
+        <h4 className="text-lg sm:text-xl font-display font-bold uppercase mb-2 text-white group-hover:text-acid-green transition-colors">
+          Bill Vault
+        </h4>
+        <p className="font-mono text-xs text-gray-400 leading-relaxed">
+          Every receipt tracked. Every bill remembered. Your paper trail immortalized.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
         {/* Live Roast Section */}
         <section className="bg-acid-green py-12 sm:py-20 border-y-2 border-black">
           <div className="max-w-3xl mx-auto px-4">
