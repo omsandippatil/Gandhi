@@ -12,13 +12,13 @@ const Dashboard = () => {
   const spent = 32500;
   
   const expenseData = [
-    { name: 'FOOD', value: 12000, color: '#99CC00' },
+    { name: 'FOOD', value: 12000, color: '#C4F000' },
     { name: 'RENT', value: 15000, color: '#050505' },
     { name: 'TRANSPORT', value: 3500, color: '#FFFFFF' }
   ];
 
   const incomeData = [
-    { name: 'SALARY', value: 75000, color: '#99CC00' },
+    { name: 'SALARY', value: 75000, color: '#C4F000' },
     { name: 'FREELANCE', value: 25000, color: '#050505' }
   ];
 
@@ -114,7 +114,7 @@ const Dashboard = () => {
             gap: '6px'
           }}>
             <div style={{
-              background: '#99CC00',
+              background: '#C4F000',
               border: '2px solid #050505',
               padding: '4px 8px',
               fontWeight: 800
@@ -168,7 +168,7 @@ const Dashboard = () => {
       }}>
         
         <div className="brutal-shadow" style={{
-          background: '#99CC00',
+          background: '#C4F000',
           border: '3px solid #050505',
           padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
@@ -203,7 +203,7 @@ const Dashboard = () => {
           </div>
           <div style={{ background: '#F5F5F5', height: 'clamp(10px, 0.8vw, 12px)', border: '2px solid #050505', position: 'relative', marginTop: 'auto' }}>
             <div style={{
-              background: '#99CC00',
+              background: '#C4F000',
               height: '100%',
               width: `${(spent / budget) * 100}%`,
               transition: 'width 0.5s'
@@ -215,7 +215,7 @@ const Dashboard = () => {
         </div>
 
         <div className="brutal-shadow" style={{
-          background: '#99CC00',
+          background: '#C4F000',
           border: '3px solid #050505',
           padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
@@ -265,7 +265,7 @@ const Dashboard = () => {
                 </div>
                 <div style={{ background: '#050505', height: 'clamp(6px, 0.5vw, 8px)', border: '2px solid #050505' }}>
                   <div style={{
-                    background: '#99CC00',
+                    background: '#C4F000',
                     height: '100%',
                     width: `${(dream.saved / dream.target) * 100}%`
                   }} />
@@ -290,7 +290,7 @@ const Dashboard = () => {
             <button
               onClick={() => setPieMode(pieMode === 'expense' ? 'income' : 'expense')}
               style={{
-                background: pieMode === 'expense' ? '#99CC00' : '#FFFFFF',
+                background: pieMode === 'expense' ? '#C4F000' : '#FFFFFF',
                 color: '#050505',
                 border: '2px solid #050505',
                 padding: 'clamp(3px, 0.3vw, 4px) clamp(6px, 0.6vw, 8px)',
@@ -349,7 +349,7 @@ const Dashboard = () => {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(4px, 0.6vw, 8px)' }}>
           <div className="brutal-shadow" style={{
-            background: '#99CC00',
+            background: '#C4F000',
             border: '3px solid #050505',
             padding: 'clamp(8px, 0.8vw, 12px)',
             color: '#050505',
@@ -404,9 +404,9 @@ const Dashboard = () => {
             flex: '0.02 0 auto'
           }}>
             {[
-              { icon: ShoppingCart, bg: '#99CC00' },
+              { icon: ShoppingCart, bg: '#C4F000' },
               { icon: FileText, bg: '#FFFFFF' },
-              { icon: Calculator, bg: '#99CC00' },
+              { icon: Calculator, bg: '#C4F000' },
               { icon: MessageSquare, bg: '#FFFFFF' }
             ].map((btn, i) => {
               const Icon = btn.icon;
@@ -449,7 +449,7 @@ const Dashboard = () => {
           </div>
           {transactions.map((txn, i) => (
             <div key={i} style={{
-              background: txn.amount > 0 ? '#99CC00' : '#FFFFFF',
+              background: txn.amount > 0 ? '#C4F000' : '#FFFFFF',
               border: '2px solid #050505',
               padding: 'clamp(8px, 0.8vw, 12px)',
               marginBottom: i === transactions.length - 1 ? '0' : 'clamp(6px, 0.6vw, 10px)',
@@ -486,7 +486,7 @@ const Dashboard = () => {
         </div>
 
         <div className="brutal-shadow" style={{
-          background: '#99CC00',
+          background: '#C4F000',
           border: '3px solid #050505',
           padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
@@ -559,7 +559,7 @@ const Dashboard = () => {
 
         <div className="brutal-shadow" style={{
           gridColumn: 'span 2',
-          background: '#99CC00',
+          background: '#C4F000',
           border: '3px solid #050505',
           padding: 'clamp(10px, 1vw, 14px)',
           transition: 'all 0.2s',
@@ -631,7 +631,7 @@ const Dashboard = () => {
             {bills.map((bill, i) => (
               <div key={i} style={{
                 flex: 1,
-                background: '#99CC00',
+                background: '#C4F000',
                 border: '2px solid #050505',
                 padding: 'clamp(10px, 1vw, 14px)',
                 color: '#050505',

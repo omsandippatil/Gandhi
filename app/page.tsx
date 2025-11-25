@@ -74,8 +74,8 @@ export default function GandhiPage() {
         .font-devnagri { font-family: 'Hind Guntur', sans-serif; }
         .font-chunky { font-family: 'Bungee Inline', cursive; }
 
-        .text-acid-green { color: #99CC00; }
-        .bg-acid-green { background-color: #99CC00; }
+        .text-acid-green { color: #C4F000; }
+        .bg-acid-green { background-color: #C4F000; }
         .text-void-black { color: #050505; }
         .bg-void-black { background-color: #050505; }
         .text-paper-white { color: #F5F5F5; }
@@ -178,7 +178,7 @@ export default function GandhiPage() {
         }
 
         .text-chunky-green {
-          color: #99CC00;
+          color: #C4F000;
           -webkit-text-stroke: 2px #050505;
           paint-order: stroke fill;
           filter: drop-shadow(6px 6px 0px rgba(0,0,0,0.3));
