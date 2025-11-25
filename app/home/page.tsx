@@ -83,20 +83,94 @@ const Dashboard = () => {
       `}</style>
 
       <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '4px 0',
+        marginBottom: '6px'
+      }}>
+        <div style={{
+          fontFamily: "'Syne', sans-serif",
+          fontSize: 'clamp(14px, 1.4vw, 18px)',
+          fontWeight: 800,
+          color: '#050505',
+          letterSpacing: '1.5px'
+        }}>
+          GANDHI
+        </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: 'clamp(8px, 0.7vw, 10px)',
+          fontWeight: 700,
+          color: '#050505'
+        }}>
+          <div style={{ 
+            letterSpacing: '0.5px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <div style={{
+              background: '#CCFF00',
+              border: '2px solid #050505',
+              padding: '4px 8px',
+              fontWeight: 800
+            }}>
+              PAISHE: 2,450
+            </div>
+          </div>
+          <button
+            style={{
+              background: '#FFFFFF',
+              border: '2px solid #050505',
+              padding: '4px 8px',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 'clamp(8px, 0.7vw, 10px)',
+              fontWeight: 800,
+              cursor: 'pointer',
+              letterSpacing: '0.5px',
+              color: '#050505',
+              boxShadow: '2px 2px 0 #050505',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translate(1px, 1px)';
+              e.currentTarget.style.boxShadow = '1px 1px 0 #050505';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translate(0, 0)';
+              e.currentTarget.style.boxShadow = '2px 2px 0 #050505';
+            }}
+          >
+            LEADERBOARD: #127
+          </button>
+          <div style={{ 
+            letterSpacing: '0.5px',
+            fontWeight: 600,
+            color: '#666'
+          }}>
+            dem@gandhi.money
+          </div>
+        </div>
+      </div>
+
+      <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gridTemplateRows: '0.7fr 1.8fr 1fr 1fr',
+        gridTemplateRows: '0.6fr 1.5fr 0.8fr 0.8fr',
         gap: 'clamp(8px, 0.8vw, 12px)',
-        height: 'calc(100vh - 2vw)',
+        height: 'calc(100vh - 60px)',
         maxWidth: '100%',
         margin: '0 auto'
       }}>
         
-        {/* Balance Card */}
         <div className="brutal-shadow" style={{
           background: '#CCFF00',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -112,11 +186,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Spend Meter Card */}
         <div className="brutal-shadow" style={{
           background: '#FFFFFF',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           color: '#050505',
           transition: 'all 0.2s',
           display: 'flex',
@@ -141,11 +214,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Forecast Card - GREEN */}
         <div className="brutal-shadow" style={{
           background: '#CCFF00',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -174,11 +246,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Dreams Card - WHITE */}
         <div className="brutal-shadow" style={{
           background: '#FFFFFF',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -204,11 +275,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Pie Chart Card */}
         <div className="brutal-shadow" style={{
           background: '#FFFFFF',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -277,17 +347,16 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Income vs Expense + Buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(6px, 0.6vw, 8px)' }}>
           <div className="brutal-shadow" style={{
             background: '#CCFF00',
             border: '3px solid #050505',
-            padding: 'clamp(10px, 1vw, 14px)',
+            padding: 'clamp(8px, 0.8vw, 12px)',
             color: '#050505',
             transition: 'all 0.2s',
             display: 'flex',
             flexDirection: 'column',
-            flex: '1 1 0',
+            flex: '12 1 0',
             minHeight: 0
           }}>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(8px, 0.7vw, 10px)', fontWeight: 800, marginBottom: '8px', letterSpacing: '1px', color: '#050505' }}>
@@ -329,10 +398,10 @@ const Dashboard = () => {
           </div>
 
           <div style={{
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 'clamp(4px, 0.4vw, 6px)',
-            flex: '0 0 clamp(35px, 3vw, 45px)',
-            height: 'clamp(35px, 3vw, 45px)'
+            flex: '0.4 0 auto'
           }}>
             {[
               { icon: ShoppingCart, bg: '#CCFF00' },
@@ -356,22 +425,21 @@ const Dashboard = () => {
                     cursor: 'pointer',
                     color: '#050505',
                     padding: '0',
-                    flex: 1,
-                    height: '100%'
+                    aspectRatio: '1 / 1',
+                    width: '100%'
                   }}
                 >
-                  <Icon size={16} strokeWidth={3} />
+                  <Icon size={14} strokeWidth={3} />
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Recent Transactions - WHITE */}
         <div className="brutal-shadow" style={{
           background: '#FFFFFF',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -417,11 +485,10 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Financial News - GREEN */}
         <div className="brutal-shadow" style={{
           background: '#CCFF00',
           border: '3px solid #050505',
-          padding: 'clamp(10px, 1vw, 14px)',
+          padding: 'clamp(8px, 0.8vw, 12px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -490,12 +557,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Portfolio - GREEN */}
         <div className="brutal-shadow" style={{
           gridColumn: 'span 2',
           background: '#CCFF00',
           border: '3px solid #050505',
-          padding: 'clamp(12px, 1.2vw, 16px)',
+          padding: 'clamp(10px, 1vw, 14px)',
           transition: 'all 0.2s',
           display: 'flex',
           flexDirection: 'column'
@@ -548,12 +614,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Upcoming Bills - WHITE */}
         <div className="brutal-shadow" style={{
           gridColumn: 'span 2',
           background: '#FFFFFF',
           border: '3px solid #050505',
-          padding: 'clamp(12px, 1.2vw, 16px)',
+          padding: 'clamp(10px, 1vw, 14px)',
           color: '#050505',
           transition: 'all 0.2s',
           display: 'flex',
