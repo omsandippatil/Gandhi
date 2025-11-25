@@ -347,7 +347,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(6px, 0.6vw, 8px)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(4px, 0.6vw, 8px)' }}>
           <div className="brutal-shadow" style={{
             background: '#CCFF00',
             border: '3px solid #050505',
@@ -359,7 +359,7 @@ const Dashboard = () => {
             flex: '12 1 0',
             minHeight: 0
           }}>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(8px, 0.7vw, 10px)', fontWeight: 800, marginBottom: '8px', letterSpacing: '1px', color: '#050505' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(4px, 0.7vw, 10px)', fontWeight: 800, marginBottom: '8px', letterSpacing: '1px', color: '#050505' }}>
               INCOME VS EXPENSE
             </div>
             <div style={{ display: 'flex', gap: '4px', flex: 1, alignItems: 'flex-end', minHeight: 0 }}>
