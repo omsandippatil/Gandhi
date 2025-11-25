@@ -356,7 +356,7 @@ const Dashboard = () => {
             transition: 'all 0.2s',
             display: 'flex',
             flexDirection: 'column',
-            flex: '12 1 0',
+            flex: '6 1 0',
             minHeight: 0
           }}>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(4px, 0.7vw, 10px)', fontWeight: 800, marginBottom: '8px', letterSpacing: '1px', color: '#050505' }}>
@@ -401,7 +401,7 @@ const Dashboard = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 'clamp(4px, 0.4vw, 6px)',
-            flex: '0.4 0 auto'
+            flex: '0.2 0 auto'
           }}>
             {[
               { icon: ShoppingCart, bg: '#CCFF00' },
