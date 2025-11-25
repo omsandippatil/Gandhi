@@ -401,7 +401,7 @@ const Dashboard = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 'clamp(4px, 0.4vw, 6px)',
-            flex: '0.2 0 auto'
+            flex: '0.02 0 auto'
           }}>
             {[
               { icon: ShoppingCart, bg: '#CCFF00' },
