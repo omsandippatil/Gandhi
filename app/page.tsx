@@ -18,7 +18,7 @@ export default function GandhiPage() {
     useEffect(() => {
   const enterFullscreen = async () => {
     try {
-      const elem = document.documentElement;
+      const elem = document.documentElement as any;
       if (elem.requestFullscreen) {
         await elem.requestFullscreen();
       } else if (elem.webkitRequestFullscreen) {
@@ -30,6 +30,9 @@ export default function GandhiPage() {
       console.log('Fullscreen not supported or denied');
     }
   };
+  
+  enterFullscreen();
+}, []);
   
   enterFullscreen();
 }, []);
