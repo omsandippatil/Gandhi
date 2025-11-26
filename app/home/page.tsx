@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ShoppingCart, FileText, Calculator, MessageSquare } from 'lucide-react';
+import { ShoppingCart, FileText, Calculator, MessageSquare, Bell } from 'lucide-react';
 import BalanceCard from './components/Balance'
 import SpendMeterCard from './components/SpendMeter';
 import ForecastCard from './components/Forecast';
@@ -9,12 +9,16 @@ import FundsCard from './components/Funds';
 import ExpenseIncomeCard from './components/ExpenseIncome';
 import IncomeExpenseChartCard from './components/IncomeExpenseChart';
 import TransactionsCard from './components/Transactions';
-import NewsCard from './components/News';
+import NewsCard from './components/Borrowings';
 import PortfolioCard from './components/Portfolio';
 import BillboardCard from './components/Billboard';
 
 const Dashboard = () => {
   const [hoveredButton, setHoveredButton] = useState<number | null>(null);
+
+  const handleNavigation = (path: string) => {
+    window.location.href = path;
+  };
 
   return (
     <div style={{
@@ -73,6 +77,30 @@ const Dashboard = () => {
           fontWeight: 700,
           color: '#050505'
         }}>
+          <button
+            onClick={() => handleNavigation('/notifications')}
+            style={{
+              background: '#FFFFFF',
+              border: '2px solid #050505',
+              padding: '6px',
+              cursor: 'pointer',
+              boxShadow: '2px 2px 0 #050505',
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translate(1px, 1px)';
+              e.currentTarget.style.boxShadow = '1px 1px 0 #050505';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translate(0, 0)';
+              e.currentTarget.style.boxShadow = '2px 2px 0 #050505';
+            }}
+          >
+            <Bell size={14} strokeWidth={2.5} />
+          </button>
           <div style={{ 
             letterSpacing: '0.5px',
             display: 'flex',
@@ -89,6 +117,7 @@ const Dashboard = () => {
             </div>
           </div>
           <button
+            onClick={() => handleNavigation('/leaderboard')}
             style={{
               background: '#FFFFFF',
               border: '2px solid #050505',
@@ -157,15 +186,16 @@ const Dashboard = () => {
             flex: '0.02 0 auto'
           }}>
             {[
-              { icon: ShoppingCart, bg: '#C4F000' },
-              { icon: FileText, bg: '#FFFFFF' },
-              { icon: Calculator, bg: '#C4F000' },
-              { icon: MessageSquare, bg: '#FFFFFF' }
+              { icon: ShoppingCart, bg: '#C4F000', path: '/smartbuy' },
+              { icon: FileText, bg: '#FFFFFF', path: '/tax' },
+              { icon: Calculator, bg: '#C4F000', path: '/plan' },
+              { icon: MessageSquare, bg: '#FFFFFF', path: '/chat' }
             ].map((btn, i) => {
               const Icon = btn.icon;
               return (
                 <button
                   key={i}
+                  onClick={() => handleNavigation(btn.path)}
                   onMouseEnter={() => setHoveredButton(i)}
                   onMouseLeave={() => setHoveredButton(null)}
                   className={hoveredButton === i ? '' : 'brutal-shadow'}
