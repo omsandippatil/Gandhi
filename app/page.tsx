@@ -33,9 +33,6 @@ export default function GandhiPage() {
   
   enterFullscreen();
 }, []);
-  
-  enterFullscreen();
-}, []);
 
     document.querySelectorAll('.reveal-text').forEach((el) => {
       observer.observe(el);
