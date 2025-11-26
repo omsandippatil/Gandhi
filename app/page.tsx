@@ -15,6 +15,25 @@ export default function GandhiPage() {
       });
     }, { threshold: 0.1 });
 
+    useEffect(() => {
+  const enterFullscreen = async () => {
+    try {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        await elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        await elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        await elem.msRequestFullscreen();
+      }
+    } catch (err) {
+      console.log('Fullscreen not supported or denied');
+    }
+  };
+  
+  enterFullscreen();
+}, []);
+
     document.querySelectorAll('.reveal-text').forEach((el) => {
       observer.observe(el);
     });
