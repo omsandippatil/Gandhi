@@ -1,7 +1,6 @@
 'use client';
-
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, TrendingUp, BarChart3 } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 
 interface Investment {
   id: string;
@@ -41,13 +40,11 @@ const MiniGraph = ({ investment }: { investment: Investment }) => {
     const profitLoss = parseFloat(investment.profit_loss);
     const isProfit = profitLoss >= 0;
     
-    // Generate random but realistic price movement data
     const points = 20;
     const data: number[] = [];
     const buyPrice = investment.buy_price;
     const currentPrice = investment.current_price;
     
-    // Create a path from buy to current with some volatility
     for (let i = 0; i < points; i++) {
       const progress = i / (points - 1);
       const baseValue = buyPrice + (currentPrice - buyPrice) * progress;
@@ -55,14 +52,12 @@ const MiniGraph = ({ investment }: { investment: Investment }) => {
       data.push(baseValue + volatility);
     }
 
-    // Normalize data to canvas height
     const maxVal = Math.max(...data);
     const minVal = Math.min(...data);
     const range = maxVal - minVal || 1;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw line graph
     ctx.beginPath();
     ctx.strokeStyle = isProfit ? '#7DA600' : '#DC2626';
     ctx.lineWidth = 2;
@@ -81,36 +76,61 @@ const MiniGraph = ({ investment }: { investment: Investment }) => {
     
     ctx.stroke();
 
-    // Fill area under curve
     ctx.lineTo(canvas.width, canvas.height);
     ctx.lineTo(0, canvas.height);
     ctx.closePath();
     ctx.fillStyle = isProfit ? 'rgba(125, 166, 0, 0.15)' : 'rgba(220, 38, 38, 0.15)';
     ctx.fill();
-
   }, [investment]);
 
   return <canvas ref={canvasRef} width={110} height={30} />;
 };
 
-const PieChart = ({ investments }: { investments: Investment[] }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export default function PortfolioDashboard() {
+  const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const pieChartRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    fetchPortfolio();
+  }, []);
+
+  useEffect(() => {
+    if (portfolioData && pieChartRef.current) {
+      drawPieChart();
+    }
+  }, [portfolioData, selectedType]);
+
+  const fetchPortfolio = async () => {
+    try {
+      const response = await fetch('/api/get/portfolio');
+      const data = await response.json();
+      if (data.success) {
+        setPortfolioData(data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching portfolio:', error);
+      setLoading(false);
+    }
+  };
+
+  const drawPieChart = () => {
+    const canvas = pieChartRef.current;
+    if (!canvas || !portfolioData) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Calculate distribution by type
     const distribution: { [key: string]: number } = {};
-    investments.forEach(inv => {
+    portfolioData.data.forEach(inv => {
       const value = parseFloat(inv.current_value);
       distribution[inv.type] = (distribution[inv.type] || 0) + value;
     });
 
     const total = Object.values(distribution).reduce((sum, val) => sum + val, 0);
+    
     const colors: { [key: string]: string } = {
       stock: '#C4F000',
       mf: '#9BC400',
@@ -139,92 +159,22 @@ const PieChart = ({ investments }: { investments: Investment[] }) => {
       startAngle += sliceAngle;
     });
 
-    // Draw center circle for donut effect
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius * 0.55, 0, 2 * Math.PI);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
-
-  }, [investments]);
-
-  // Calculate distribution percentages
-  const distribution: { [key: string]: number } = {};
-  investments.forEach(inv => {
-    const value = parseFloat(inv.current_value);
-    distribution[inv.type] = (distribution[inv.type] || 0) + value;
-  });
-  const total = Object.values(distribution).reduce((sum, val) => sum + val, 0);
-
-  const typeLabels: { [key: string]: string } = {
-    stock: 'Stocks',
-    mf: 'Mutual Funds',
-    gold: 'Gold',
-    crypto: 'Crypto'
-  };
-
-  const colors: { [key: string]: string } = {
-    stock: '#C4F000',
-    mf: '#9BC400',
-    gold: '#7DA600',
-    crypto: '#5E8800'
-  };
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '100%' }}>
-      <canvas ref={canvasRef} width={200} height={200} style={{ display: 'block', margin: '0 auto' }} />
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        {Object.entries(distribution).map(([type, value]) => (
-          <div key={type} style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: '10px',
-            fontWeight: 700
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                background: colors[type]
-              }} />
-              <span style={{ color: '#050505', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-                {typeLabels[type]}
-              </span>
-            </div>
-            <span style={{ color: '#050505' }}>
-              {((value / total) * 100).toFixed(1)}%
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default function CompactPortfolioDashboard() {
-  const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchPortfolio();
-  }, []);
-
-  const fetchPortfolio = async () => {
-    try {
-      const response = await fetch('/api/get/portfolio');
-      const data = await response.json();
-      if (data.success) {
-        setPortfolioData(data);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching portfolio:', error);
-      setLoading(false);
-    }
   };
 
   const formatCurrency = (amount: string | number) => {
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(num);
+  };
+
+  const formatCompactCurrency = (amount: string | number) => {
     const num = typeof amount === 'string' ? parseFloat(amount) : amount;
     return `₹${(num / 1000).toFixed(1)}k`;
   };
@@ -237,6 +187,22 @@ export default function CompactPortfolioDashboard() {
       crypto: '#5E8800'
     };
     return colors[type] || '#C4F000';
+  };
+
+  const getFilteredInvestments = () => {
+    if (!portfolioData) return [];
+    if (selectedType === 'all') return portfolioData.data;
+    return portfolioData.data.filter(inv => inv.type === selectedType);
+  };
+
+  const getDistribution = () => {
+    if (!portfolioData) return {};
+    const distribution: { [key: string]: number } = {};
+    portfolioData.data.forEach(inv => {
+      const value = parseFloat(inv.current_value);
+      distribution[inv.type] = (distribution[inv.type] || 0) + value;
+    });
+    return distribution;
   };
 
   if (loading) {
@@ -267,10 +233,28 @@ export default function CompactPortfolioDashboard() {
             background: '#f5f5f5', 
             height: '16px', 
             width: '200px',
-            animation: 'pulse 1.5s ease-in-out infinite 0.2s'
+            animation: 'pulse 1.5s ease-in-out infinite'
           }} />
         </div>
-
+        <div style={{
+          flex: 1,
+          padding: '16px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <div style={{ display: 'flex', gap: '16px', height: '100px' }}>
+            {[1, 2, 3].map(i => (
+              <div key={i} style={{
+                flex: 1,
+                background: '#f5f5f5',
+                border: '2px solid #050505',
+                animation: `pulse 1.5s ease-in-out infinite ${i * 0.1}s`
+              }} />
+            ))}
+          </div>
+          <div style={{ flex: 1, background: '#f5f5f5', border: '2px solid #050505', animation: 'pulse 1.5s ease-in-out infinite 0.3s' }} />
+        </div>
         <style>{`
           @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -283,9 +267,19 @@ export default function CompactPortfolioDashboard() {
 
   if (!portfolioData) return null;
 
-  const { data: investments, summary } = portfolioData;
+  const { summary } = portfolioData;
   const totalProfitLoss = parseFloat(summary.totalProfitLoss);
   const totalProfitLossPercentage = parseFloat(summary.totalProfitLossPercentage);
+  const filteredInvestments = getFilteredInvestments();
+  const distribution = getDistribution();
+  const total = Object.values(distribution).reduce((sum, val) => sum + val, 0);
+
+  const typeLabels: { [key: string]: string } = {
+    stock: 'Stocks',
+    mf: 'Mutual Funds',
+    gold: 'Gold',
+    crypto: 'Crypto'
+  };
 
   return (
     <div style={{
@@ -334,228 +328,435 @@ export default function CompactPortfolioDashboard() {
             PORTFOLIO
           </div>
         </div>
-        <button style={{
-          background: '#050505',
-          border: '2px solid #050505',
-          color: '#C4F000',
-          padding: '8px 16px',
-          fontSize: '11px',
-          fontWeight: 700,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          letterSpacing: '0.5px'
-        }}>
-          <BarChart3 size={16} strokeWidth={3} />
-          ANALYZE
-        </button>
+
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <button
+            onClick={() => setSelectedType('all')}
+            style={{
+              background: selectedType === 'all' ? '#C4F000' : '#ffffff',
+              border: '2px solid #050505',
+              padding: '6px 10px',
+              fontSize: '9px',
+              fontWeight: 700,
+              color: '#050505',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              letterSpacing: '0.5px'
+            }}
+          >
+            ALL
+          </button>
+          {Object.keys(distribution).map((type) => (
+            <button
+              key={type}
+              onClick={() => setSelectedType(type)}
+              style={{
+                background: selectedType === type ? getTypeColor(type) : '#ffffff',
+                border: '2px solid #050505',
+                padding: '6px 10px',
+                fontSize: '9px',
+                fontWeight: 700,
+                color: '#050505',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                letterSpacing: '0.5px'
+              }}
+            >
+              {type.toUpperCase()}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div style={{
-        flex: 1,
-        padding: '20px',
-        display: 'grid',
-        gridTemplateColumns: '260px 1fr',
+      {/* Stats Bar */}
+      <div style={{ 
+        padding: '16px 20px',
+        display: 'flex',
         gap: '16px',
-        overflow: 'hidden'
+        borderBottom: '2px solid #050505'
       }}>
-        {/* Left Column - Summary Cards + Pie Chart */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'auto' }}>
-          {/* Summary Cards */}
-          <div style={{
-            background: '#C4F000',
-            border: '2px solid #050505',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{ fontSize: '8px', fontWeight: 700, color: '#050505', marginBottom: '4px', letterSpacing: '0.5px', opacity: 0.7 }}>
-              TOTAL INVESTED
-            </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#050505' }}>
-              ₹{(parseFloat(summary.totalInvested) / 1000).toFixed(0)}k
-            </div>
+        <div style={{
+          flex: 1,
+          background: '#C4F000',
+          border: '2px solid #050505',
+          padding: '12px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: '#050505', marginBottom: '4px', letterSpacing: '0.5px' }}>
+            TOTAL INVESTED
           </div>
-
-          <div style={{
-            background: '#ffffff',
-            border: '2px solid #050505',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{ fontSize: '8px', fontWeight: 700, color: '#050505', marginBottom: '4px', letterSpacing: '0.5px', opacity: 0.7 }}>
-              CURRENT VALUE
-            </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#050505' }}>
-              ₹{(parseFloat(summary.totalCurrentValue) / 1000).toFixed(0)}k
-            </div>
-          </div>
-
-          <div style={{
-            background: '#ffffff',
-            border: '2px solid #050505',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{ fontSize: '8px', fontWeight: 700, color: '#050505', marginBottom: '4px', letterSpacing: '0.5px', opacity: 0.7 }}>
-              PROFIT & LOSS
-            </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: totalProfitLoss >= 0 ? '#7DA600' : '#DC2626' }}>
-              {totalProfitLoss >= 0 ? '+' : ''}₹{(totalProfitLoss / 1000).toFixed(1)}k
-            </div>
-          </div>
-
-          <div style={{
-            background: totalProfitLoss >= 0 ? '#9BC400' : '#DC2626',
-            border: '2px solid #050505',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{ fontSize: '8px', fontWeight: 700, color: totalProfitLoss >= 0 ? '#050505' : '#ffffff', marginBottom: '4px', letterSpacing: '0.5px', opacity: totalProfitLoss >= 0 ? 0.7 : 0.9 }}>
-              TOTAL RETURN
-            </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: totalProfitLoss >= 0 ? '#050505' : '#ffffff' }}>
-              {totalProfitLossPercentage >= 0 ? '+' : ''}{totalProfitLossPercentage.toFixed(2)}%
-            </div>
-          </div>
-
-          {/* Pie Chart */}
-          <div style={{
-            background: '#ffffff',
-            border: '2px solid #050505',
-            padding: '12px',
-            marginTop: '4px'
-          }}>
-            <div style={{
-              fontSize: '10px',
-              fontWeight: 800,
-              color: '#050505',
-              letterSpacing: '1px',
-              marginBottom: '12px'
-            }}>
-              ASSET DISTRIBUTION
-            </div>
-            <PieChart investments={investments} />
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#050505' }}>
+            {formatCurrency(summary.totalInvested)}
           </div>
         </div>
 
-        {/* Right Column - Investments Grid */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-          gap: '10px',
-          alignContent: 'start',
-          overflowY: 'auto'
+          flex: 1,
+          background: '#ffffff',
+          border: '2px solid #050505',
+          padding: '12px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
         }}>
-          {investments.map((investment) => {
-            const profitLoss = parseFloat(investment.profit_loss);
-            const profitLossPercentage = parseFloat(investment.profit_loss_percentage);
-            const isProfit = profitLoss >= 0;
+          <div style={{ fontSize: '10px', fontWeight: 700, color: '#050505', marginBottom: '4px', letterSpacing: '0.5px' }}>
+            CURRENT VALUE
+          </div>
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#050505' }}>
+            {formatCurrency(summary.totalCurrentValue)}
+          </div>
+        </div>
 
-            return (
-              <div key={investment.id} style={{
-                background: '#ffffff',
-                border: '2px solid #050505',
-                padding: '10px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '6px',
-                position: 'relative',
-                height: 'fit-content'
+        <div style={{
+          flex: 1,
+          background: totalProfitLoss >= 0 ? '#9BC400' : '#DC2626',
+          border: '2px solid #050505',
+          padding: '12px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: totalProfitLoss >= 0 ? '#050505' : '#ffffff', marginBottom: '4px', letterSpacing: '0.5px' }}>
+            PROFIT & LOSS
+          </div>
+          <div style={{ fontSize: '20px', fontWeight: 800, color: totalProfitLoss >= 0 ? '#050505' : '#ffffff' }}>
+            {totalProfitLoss >= 0 ? '+' : ''}{formatCurrency(totalProfitLoss)}
+          </div>
+        </div>
+
+        <div style={{
+          flex: 1,
+          background: totalProfitLoss >= 0 ? '#7DA600' : '#991B1B',
+          border: '2px solid #050505',
+          padding: '12px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: '#ffffff', marginBottom: '4px', letterSpacing: '0.5px' }}>
+            TOTAL RETURN
+          </div>
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff' }}>
+            {totalProfitLossPercentage >= 0 ? '+' : ''}{totalProfitLossPercentage.toFixed(2)}%
+          </div>
+        </div>
+      </div>
+
+
+
+      {/* Main Content */}
+      <div style={{
+        flex: 1,
+        padding: '16px 20px',
+        display: 'flex',
+        gap: '20px',
+        overflow: 'hidden'
+      }}>
+        {/* Left - Investments Grid */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: '10px',
+          alignContent: 'start'
+        }}>
+          {filteredInvestments.length === 0 ? (
+            <div style={{
+              gridColumn: '1 / -1',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '300px',
+              gap: '12px'
+            }}>
+              <div style={{ fontSize: '48px', opacity: 0.2 }}>📈</div>
+              <div style={{
+                fontSize: '13px',
+                fontWeight: 700,
+                color: '#050505',
+                opacity: 0.5
               }}>
-                {/* Type Badge */}
-                <div style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  background: getTypeColor(investment.type),
-                  border: '1px solid #050505',
-                  padding: '2px 6px',
-                  fontSize: '7px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  {investment.type}
-                </div>
+                NO INVESTMENTS FOUND
+              </div>
+            </div>
+          ) : (
+            filteredInvestments.map((investment) => {
+              const profitLoss = parseFloat(investment.profit_loss);
+              const profitLossPercentage = parseFloat(investment.profit_loss_percentage);
+              const isProfit = profitLoss >= 0;
 
-                {/* Asset Name */}
-                <div style={{ fontSize: '12px', fontWeight: 800, color: '#050505', paddingRight: '50px', letterSpacing: '0.3px' }}>
-                  {investment.asset_name}
-                </div>
-
-                {/* Platform & Quantity */}
-                <div style={{ display: 'flex', gap: '8px', fontSize: '8px', fontWeight: 700, color: '#050505', opacity: 0.6, letterSpacing: '0.3px' }}>
-                  <span>{investment.platform}</span>
-                  <span>•</span>
-                  <span>QTY: {investment.quantity}</span>
-                </div>
-
-                {/* Mini Graph */}
-                <div style={{ marginTop: '2px', marginBottom: '2px' }}>
-                  <MiniGraph investment={investment} />
-                </div>
-
-                {/* Prices */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                  <div>
-                    <div style={{ fontSize: '7px', fontWeight: 700, color: '#050505', opacity: 0.5, letterSpacing: '0.5px' }}>BUY</div>
-                    <div style={{ fontSize: '10px', fontWeight: 800, color: '#050505' }}>₹{investment.buy_price.toLocaleString()}</div>
+              return (
+                <div
+                  key={investment.id}
+                  style={{
+                    background: '#ffffff',
+                    border: '2px solid #050505',
+                    padding: '10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    position: 'relative',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '4px 4px 0px #050505';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {/* Type Badge */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    background: getTypeColor(investment.type),
+                    border: '1px solid #050505',
+                    padding: '2px 6px',
+                    fontSize: '7px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    {investment.type}
                   </div>
-                  <div>
-                    <div style={{ fontSize: '7px', fontWeight: 700, color: '#050505', opacity: 0.5, letterSpacing: '0.5px' }}>CURRENT</div>
-                    <div style={{ fontSize: '10px', fontWeight: 800, color: '#050505' }}>₹{investment.current_price.toLocaleString()}</div>
-                  </div>
-                </div>
 
-                {/* Investment & Value */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', paddingTop: '6px', borderTop: '1px solid #e5e5e5' }}>
-                  <div>
-                    <div style={{ fontSize: '7px', fontWeight: 700, color: '#050505', opacity: 0.5, letterSpacing: '0.5px' }}>INVESTED</div>
-                    <div style={{ fontSize: '11px', fontWeight: 800, color: '#050505' }}>
-                      {formatCurrency(investment.total_investment)}
+                  {/* Asset Name */}
+                  <div style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: '#050505',
+                    paddingRight: '50px',
+                    marginBottom: '2px'
+                  }}>
+                    {investment.asset_name}
+                  </div>
+
+                  {/* Platform & Quantity */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '6px',
+                    fontSize: '8px',
+                    fontWeight: 700,
+                    color: '#050505',
+                    opacity: 0.6
+                  }}>
+                    <span>{investment.platform}</span>
+                    <span>•</span>
+                    <span>QTY: {investment.quantity}</span>
+                  </div>
+
+                  {/* Mini Graph */}
+                  <div style={{ margin: '2px 0' }}>
+                    <MiniGraph investment={investment} />
+                  </div>
+
+                  {/* Prices */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '6px',
+                    paddingBottom: '6px',
+                    borderBottom: '1px solid #e5e5e5'
+                  }}>
+                    <div>
+                      <div style={{
+                        fontSize: '7px',
+                        fontWeight: 700,
+                        color: '#050505',
+                        opacity: 0.5,
+                        marginBottom: '2px'
+                      }}>
+                        BUY
+                      </div>
+                      <div style={{ fontSize: '10px', fontWeight: 800, color: '#050505' }}>
+                        ₹{investment.buy_price.toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{
+                        fontSize: '7px',
+                        fontWeight: 700,
+                        color: '#050505',
+                        opacity: 0.5,
+                        marginBottom: '2px'
+                      }}>
+                        NOW
+                      </div>
+                      <div style={{ fontSize: '10px', fontWeight: 800, color: '#050505' }}>
+                        ₹{investment.current_price.toLocaleString()}
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <div style={{ fontSize: '7px', fontWeight: 700, color: '#050505', opacity: 0.5, letterSpacing: '0.5px' }}>VALUE</div>
-                    <div style={{ fontSize: '11px', fontWeight: 800, color: '#050505' }}>
-                      {formatCurrency(investment.current_value)}
+
+                  {/* Investment & Value */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '6px'
+                  }}>
+                    <div>
+                      <div style={{
+                        fontSize: '7px',
+                        fontWeight: 700,
+                        color: '#050505',
+                        opacity: 0.5,
+                        marginBottom: '2px'
+                      }}>
+                        INVESTED
+                      </div>
+                      <div style={{ fontSize: '10px', fontWeight: 800, color: '#050505' }}>
+                        {formatCompactCurrency(investment.total_investment)}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{
+                        fontSize: '7px',
+                        fontWeight: 700,
+                        color: '#050505',
+                        opacity: 0.5,
+                        marginBottom: '2px'
+                      }}>
+                        VALUE
+                      </div>
+                      <div style={{ fontSize: '10px', fontWeight: 800, color: '#050505' }}>
+                        {formatCompactCurrency(investment.current_value)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* P&L Footer */}
+                  <div style={{
+                    background: isProfit ? '#C4F000' : '#FEE2E2',
+                    border: '1px solid #050505',
+                    padding: '6px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: '2px'
+                  }}>
+                    <div style={{
+                      fontSize: '10px',
+                      fontWeight: 800,
+                      color: isProfit ? '#050505' : '#DC2626'
+                    }}>
+                      {isProfit ? '+' : ''}{formatCompactCurrency(investment.profit_loss)}
+                    </div>
+                    <div style={{
+                      fontSize: '10px',
+                      fontWeight: 800,
+                      color: isProfit ? '#050505' : '#DC2626'
+                    }}>
+                      {isProfit ? '+' : ''}{profitLossPercentage.toFixed(2)}%
                     </div>
                   </div>
                 </div>
+              );
+            })
+          )}
+        </div>
 
-                {/* P&L Footer */}
-                <div style={{
-                  background: isProfit ? '#C4F000' : '#FEE2E2',
-                  border: '1px solid #050505',
-                  padding: '6px',
+        {/* Right - Pie Chart */}
+        <div style={{
+          width: '300px',
+          background: '#ffffff',
+          border: '2px solid #050505',
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <div style={{
+            fontSize: '11px',
+            fontWeight: 800,
+            color: '#050505',
+            letterSpacing: '1px'
+          }}>
+            ASSET DISTRIBUTION
+          </div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <canvas ref={pieChartRef} width={200} height={200} />
+          </div>
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}>
+            {Object.entries(distribution).map(([type, value]) => (
+              <div
+                key={type}
+                style={{
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  marginTop: '2px'
-                }}>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: isProfit ? '#050505' : '#DC2626' }}>
-                    {isProfit ? '+' : ''}{formatCurrency(investment.profit_loss)}
-                  </div>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: isProfit ? '#050505' : '#DC2626' }}>
-                    {isProfit ? '+' : ''}{profitLossPercentage.toFixed(2)}%
-                  </div>
+                  justifyContent: 'space-between',
+                  padding: '8px',
+                  background: selectedType === type ? '#f5f5f5' : 'transparent',
+                  border: selectedType === type ? '1px solid #050505' : '1px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onClick={() => setSelectedType(type)}
+                onMouseEnter={(e) => {
+                  if (selectedType !== type) {
+                    e.currentTarget.style.background = '#fafafa';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedType !== type) {
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{
+                    width: '14px',
+                    height: '14px',
+                    background: getTypeColor(type),
+                    border: '1px solid #050505'
+                  }} />
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: '#050505',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.3px'
+                  }}>
+                    {typeLabels[type]}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    color: '#050505'
+                  }}>
+                    {((value / total) * 100).toFixed(1)}%
+                  </span>
+                  <span style={{
+                    fontSize: '9px',
+                    fontWeight: 600,
+                    color: '#050505',
+                    opacity: 0.5
+                  }}>
+                    {formatCompactCurrency(value)}
+                  </span>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </div>

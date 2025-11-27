@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, AlertCircle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, AlertCircle, CheckCircle, Check } from 'lucide-react';
 
 interface Bill {
   id: string;
@@ -31,6 +31,8 @@ export default function BillPaymentPlanner() {
   const [predicting, setPredicting] = useState(false);
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlan[]>([]);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [selectedBills, setSelectedBills] = useState<Set<string>>(new Set());
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -62,6 +64,39 @@ export default function BillPaymentPlanner() {
       console.error('Error fetching data:', error);
       setLoading(false);
     }
+  };
+
+  const toggleBillSelection = (billId: string) => {
+    const newSelected = new Set(selectedBills);
+    if (newSelected.has(billId)) {
+      newSelected.delete(billId);
+    } else {
+      newSelected.add(billId);
+    }
+    setSelectedBills(newSelected);
+  };
+
+  const paySelectedBills = async () => {
+    if (selectedBills.size === 0) return;
+
+    setPaying(true);
+
+    // Calculate total amount to be paid
+    const selectedBillsData = bills.filter(b => selectedBills.has(b.id));
+    const totalAmount = selectedBillsData.reduce((sum, b) => sum + b.amount, 0);
+
+    // Simulate payment processing
+    setTimeout(() => {
+      // Deduct from balance
+      setTotalBalance(prev => prev - totalAmount);
+
+      // Remove paid bills from the list
+      setBills(prev => prev.filter(b => !selectedBills.has(b.id)));
+
+      // Clear selection
+      setSelectedBills(new Set());
+      setPaying(false);
+    }, 1500);
   };
 
   const generatePaymentPlan = () => {
@@ -144,6 +179,10 @@ export default function BillPaymentPlanner() {
       default: return 'FLEXIBLE';
     }
   };
+
+  const selectedBillsAmount = bills
+    .filter(b => selectedBills.has(b.id))
+    .reduce((sum, b) => sum + b.amount, 0);
 
   if (loading) {
     return (
@@ -256,26 +295,49 @@ export default function BillPaymentPlanner() {
           </div>
         </div>
 
-        {paymentPlan.length === 0 && (
-          <button
-            onClick={generatePaymentPlan}
-            disabled={predicting || bills.length === 0}
-            style={{
-              background: predicting ? '#f5f5f5' : '#C4F000',
-              border: '2px solid #050505',
-              padding: '8px 16px',
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#050505',
-              cursor: predicting || bills.length === 0 ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s',
-              letterSpacing: '0.5px',
-              opacity: predicting || bills.length === 0 ? 0.6 : 1
-            }}
-          >
-            {predicting ? 'PREDICTING...' : 'GENERATE PAYMENT PLAN'}
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {selectedBills.size > 0 && (
+            <button
+              onClick={paySelectedBills}
+              disabled={paying}
+              style={{
+                background: paying ? '#f5f5f5' : '#C4F000',
+                border: '2px solid #050505',
+                padding: '8px 16px',
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#050505',
+                cursor: paying ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                letterSpacing: '0.5px',
+                opacity: paying ? 0.6 : 1
+              }}
+            >
+              {paying ? 'PROCESSING...' : `PAY ${selectedBills.size} BILL${selectedBills.size > 1 ? 'S' : ''} (${formatCurrency(selectedBillsAmount)})`}
+            </button>
+          )}
+          
+          {paymentPlan.length === 0 && (
+            <button
+              onClick={generatePaymentPlan}
+              disabled={predicting || bills.length === 0}
+              style={{
+                background: predicting ? '#f5f5f5' : '#ffffff',
+                border: '2px solid #050505',
+                padding: '8px 16px',
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#050505',
+                cursor: predicting || bills.length === 0 ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                letterSpacing: '0.5px',
+                opacity: predicting || bills.length === 0 ? 0.6 : 1
+              }}
+            >
+              {predicting ? 'PREDICTING...' : 'GENERATE PAYMENT PLAN'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div style={{
@@ -607,7 +669,7 @@ export default function BillPaymentPlanner() {
           </div>
         )}
 
-        {/* Initial state - show bills */}
+        {/* Initial state - show bills with checkboxes */}
         {!predicting && paymentPlan.length === 0 && bills.length > 0 && (
           <div style={{
             background: '#ffffff',
@@ -630,22 +692,43 @@ export default function BillPaymentPlanner() {
               const dueDate = new Date(bill.due_date);
               const today = new Date();
               const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+              const isSelected = selectedBills.has(bill.id);
               
               return (
-                <div key={bill.id} style={{
-                  background: '#fafafa',
-                  border: '1px solid #e5e5e5',
-                  padding: '14px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}>
-                  <div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#050505', marginBottom: '4px' }}>
-                      {bill.name}
+                <div 
+                  key={bill.id} 
+                  onClick={() => toggleBillSelection(bill.id)}
+                  style={{
+                    background: isSelected ? '#f0fdf4' : '#fafafa',
+                    border: isSelected ? '2px solid #C4F000' : '1px solid #e5e5e5',
+                    padding: '14px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      border: '2px solid #050505',
+                      background: isSelected ? '#C4F000' : '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      {isSelected && <Check size={16} color="#050505" strokeWidth={3} />}
                     </div>
-                    <div style={{ fontSize: '11px', fontWeight: 600, color: '#050505', opacity: 0.6 }}>
-                      Due: {formatDate(bill.due_date)} • {daysUntilDue} days left
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#050505', marginBottom: '4px' }}>
+                        {bill.name}
+                      </div>
+                      <div style={{ fontSize: '11px', fontWeight: 600, color: '#050505', opacity: 0.6 }}>
+                        Due: {formatDate(bill.due_date)} • {daysUntilDue} days left
+                      </div>
                     </div>
                   </div>
                   <div style={{ fontSize: '16px', fontWeight: 800, color: '#050505' }}>
