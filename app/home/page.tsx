@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ShoppingCart, FileText, Calculator, MessageSquare, Bell } from 'lucide-react';
+import { ShoppingCart, FileText, Calculator, MessageSquare } from 'lucide-react';
 import BalanceCard from './components/Balance'
 import SpendMeterCard from './components/SpendMeter';
 import ForecastCard from './components/Forecast';
@@ -12,9 +12,11 @@ import TransactionsCard from './components/Transactions';
 import NewsCard from './components/Borrowings';
 import PortfolioCard from './components/Portfolio';
 import BillboardCard from './components/Billboard';
+import NotificationPopup from './components/ui/Notification';
 
 const Dashboard = () => {
   const [hoveredButton, setHoveredButton] = useState<number | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleNavigation = (path: string) => {
     window.location.href = path;
@@ -50,6 +52,12 @@ const Dashboard = () => {
         * {
           box-sizing: border-box;
         }
+
+        .card-link {
+          text-decoration: none;
+          color: inherit;
+          display: contents;
+        }
       `}</style>
 
       <div style={{
@@ -77,30 +85,10 @@ const Dashboard = () => {
           fontWeight: 700,
           color: '#050505'
         }}>
-          <button
-            onClick={() => handleNavigation('/notifications')}
-            style={{
-              background: '#FFFFFF',
-              border: '2px solid #050505',
-              padding: '6px',
-              cursor: 'pointer',
-              boxShadow: '2px 2px 0 #050505',
-              transition: 'all 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translate(1px, 1px)';
-              e.currentTarget.style.boxShadow = '1px 1px 0 #050505';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translate(0, 0)';
-              e.currentTarget.style.boxShadow = '2px 2px 0 #050505';
-            }}
-          >
-            <Bell size={14} strokeWidth={2.5} />
-          </button>
+          <NotificationPopup 
+            showNotifications={showNotifications}
+            setShowNotifications={setShowNotifications}
+          />
           <div style={{ 
             letterSpacing: '0.5px',
             display: 'flex',
@@ -162,22 +150,35 @@ const Dashboard = () => {
         margin: '0 auto'
       }}>
         
-        <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <BalanceCard />
-        </div>
-        <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <SpendMeterCard />
-        </div>
-        <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <ForecastCard />
-        </div>
-        <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <FundsCard />
-        </div>
-        <ExpenseIncomeCard />
+        <a href="/balance" className="card-link">
+          <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+            <BalanceCard />
+          </div>
+        </a>
+        <a href="/spend" className="card-link">
+          <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+            <SpendMeterCard />
+          </div>
+        </a>
+        <a href="/forecast" className="card-link">
+          <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+            <ForecastCard />
+          </div>
+        </a>
+        <a href="/funds" className="card-link">
+          <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+            <FundsCard />
+          </div>
+        </a>
+        
+        <a href="/expense-income" className="card-link">
+          <ExpenseIncomeCard />
+        </a>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(4px, 0.6vw, 8px)' }}>
-          <IncomeExpenseChartCard />
+          <a href="/chart" className="card-link">
+            <IncomeExpenseChartCard />
+          </a>
 
           <div style={{
             display: 'grid',
@@ -219,10 +220,18 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <TransactionsCard />
-        <NewsCard />
-        <PortfolioCard />
-        <BillboardCard />
+        <a href="/transactions" className="card-link">
+          <TransactionsCard />
+        </a>
+        <a href="/borrowings" className="card-link">
+          <NewsCard />
+        </a>
+        <a href="/portfolio" className="card-link">
+          <PortfolioCard />
+        </a>
+        <a href="/billboard" className="card-link">
+          <BillboardCard />
+        </a>
 
       </div>
     </div>
