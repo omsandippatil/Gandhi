@@ -635,7 +635,7 @@ export default function FinanceDashboard() {
           color: '#050505',
           lineHeight: '44px'
         }}>
-          GANDHI
+          BALANCE
         </div>
       </div>
 
