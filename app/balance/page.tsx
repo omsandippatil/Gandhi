@@ -554,7 +554,7 @@ export default function FinanceDashboard() {
           </div>
 
           <div style={{
-            gridColumn: 'span 7',
+            gridColumn: 'span 8',
             background: '#ffffff',
             border: '2px solid #050505',
             padding: '16px'
@@ -566,7 +566,7 @@ export default function FinanceDashboard() {
           </div>
 
           <div style={{
-            gridColumn: 'span 5',
+            gridColumn: 'span 4',
             background: '#ffffff',
             border: '2px solid #050505',
             padding: '16px'
@@ -722,7 +722,7 @@ export default function FinanceDashboard() {
         </div>
 
         <div style={{
-          gridColumn: 'span 7',
+          gridColumn: 'span 8',
           background: '#ffffff',
           border: '2px solid #050505',
           padding: '16px',
@@ -857,7 +857,7 @@ export default function FinanceDashboard() {
         </div>
 
         <div style={{
-          gridColumn: 'span 5',
+          gridColumn: 'span 4',
           background: '#ffffff',
           border: '2px solid #050505',
           padding: '16px',
