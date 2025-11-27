@@ -36,7 +36,7 @@ export default function SpendmeterDashboard() {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<TimeRange>('weekly');
 
-  const BUDGET = 35000;
+  const BUDGET = 50000;
 
   useEffect(() => {
     fetchData();
@@ -135,10 +135,147 @@ export default function SpendmeterDashboard() {
         background: '#ffffff',
         fontFamily: "'Inter', sans-serif",
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        flexDirection: 'column'
       }}>
-        <div style={{ fontSize: '14px', fontWeight: 700, color: '#050505' }}>Loading...</div>
+        <div style={{
+          padding: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px'
+        }}>
+          <div style={{
+            background: '#f5f5f5',
+            border: '2px solid #050505',
+            padding: '10px 12px',
+            height: '44px',
+            width: '44px'
+          }} />
+          <div style={{
+            background: '#f5f5f5',
+            height: '20px',
+            width: '150px'
+          }} />
+        </div>
+
+        <div style={{ 
+          flex: 1,
+          padding: '0 24px 24px 24px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gridTemplateRows: 'auto 1fr',
+          gap: '16px',
+          maxHeight: 'calc(100vh - 90px)',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            gridColumn: 'span 6',
+            display: 'flex',
+            gap: '16px'
+          }}>
+            <div style={{
+              flex: 1,
+              background: '#C4F000',
+              border: '2px solid #050505',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div style={{ width: '60%', height: '11px', background: 'rgba(0,0,0,0.1)', marginBottom: '8px' }} />
+              <div style={{ width: '80%', height: '36px', background: 'rgba(0,0,0,0.1)' }} />
+              <div style={{ width: '50%', height: '10px', background: 'rgba(0,0,0,0.1)', marginTop: '12px' }} />
+            </div>
+
+            <div style={{
+              flex: 1,
+              background: '#ffffff',
+              border: '2px solid #050505',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}>
+              <div style={{ width: '60%', height: '11px', background: '#f5f5f5', marginBottom: '8px' }} />
+              <div style={{ width: '50%', height: '36px', background: '#f5f5f5' }} />
+              <div style={{ width: '70%', height: '10px', background: '#f5f5f5', marginTop: '4px' }} />
+              <div style={{ marginTop: '12px', background: '#f5f5f5', height: '8px', border: '2px solid #050505' }} />
+            </div>
+          </div>
+
+          <div style={{
+            gridColumn: 'span 3',
+            background: '#ffffff',
+            border: '2px solid #050505',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ width: '60%', height: '11px', background: '#f5f5f5', marginBottom: '8px' }} />
+            <div style={{ width: '70%', height: '36px', background: '#f5f5f5' }} />
+            <div style={{ width: '80%', height: '10px', background: '#f5f5f5', marginTop: '4px' }} />
+            <div style={{ marginTop: '12px', background: '#f5f5f5', height: '8px', border: '2px solid #050505' }} />
+          </div>
+
+          <div style={{
+            gridColumn: 'span 3',
+            background: '#ffffff',
+            border: '2px solid #050505',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ width: '60%', height: '11px', background: '#f5f5f5', marginBottom: '8px' }} />
+            <div style={{ width: '70%', height: '36px', background: '#f5f5f5' }} />
+            <div style={{ width: '80%', height: '10px', background: '#f5f5f5', marginTop: '4px' }} />
+            <div style={{ marginTop: '12px', background: '#f5f5f5', height: '8px', border: '2px solid #050505' }} />
+          </div>
+
+          <div style={{
+            gridColumn: 'span 7',
+            background: '#ffffff',
+            border: '2px solid #050505',
+            padding: '24px',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <div style={{ width: '120px', height: '11px', background: '#f5f5f5' }} />
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <div style={{ width: '70px', height: '28px', background: '#C4F000', border: '2px solid #050505' }} />
+                <div style={{ width: '70px', height: '28px', background: '#ffffff', border: '2px solid #050505' }} />
+              </div>
+            </div>
+            
+            <div style={{ flex: 1, position: 'relative', minHeight: 0, background: '#f5f5f5' }} />
+          </div>
+
+          <div style={{
+            gridColumn: 'span 5',
+            background: '#ffffff',
+            border: '2px solid #050505',
+            padding: '24px',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <div style={{ width: '150px', height: '11px', background: '#f5f5f5', marginBottom: '24px' }} />
+            <div style={{ display: 'flex', gap: '32px', flex: 1, alignItems: 'center' }}>
+              <div style={{ width: '200px', height: '200px', borderRadius: '50%', background: '#f5f5f5' }} />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '14px', height: '14px', background: '#f5f5f5' }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ width: '60%', height: '12px', background: '#f5f5f5', marginBottom: '4px' }} />
+                      <div style={{ width: '40%', height: '10px', background: '#f5f5f5' }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
